@@ -1,8 +1,8 @@
 import bcrypt
 
 from app.db.session import SessionLocal
-from app.exceptions.application_service_exception import ApplicationServiceException
-from app.models.buyer_model import Buyer
+from app.exceptions.exceptions import ApplicationServiceException
+from app.models.model import Buyer
 
 
 async def save_buyer(buyer_data):
