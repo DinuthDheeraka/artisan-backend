@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from app.db.session import engine
 from app.exceptions.exceptions import handle_application_exceptions
-from app.models.model import Base
+from app.models.models import Base
 from app.routes import buyer_routes, artist_routes
 
 app = FastAPI()
