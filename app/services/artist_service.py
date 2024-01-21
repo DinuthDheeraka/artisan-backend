@@ -2,7 +2,7 @@ import bcrypt
 
 from app.db.session import SessionLocal
 from app.exceptions.exceptions import ApplicationServiceException
-from app.models.model import Artist
+from app.models.models import Artist
 
 
 async def save_artist(artist_data):

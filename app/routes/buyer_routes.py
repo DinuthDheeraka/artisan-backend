@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from app.schemas.buyer_schema import BuyerCreate
-from app.service.buyer_service import save_buyer
+from app.services.buyer_service import save_buyer
 
 router = APIRouter()
 
