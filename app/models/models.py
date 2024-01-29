@@ -109,7 +109,6 @@ class Review(Base):
     review_comment = Column(String(255), nullable=True, default=None)
     review_img_url = Column(String(255), default=None, nullable=True)
     review_points = Column(Float, nullable=True, default=0.0)
-    system_points = Column(Float, nullable=True, default=0.0)
     review_stars = Column(Integer, nullable=True, default=0.0)
     is_positive = Column(Boolean, nullable=True, default=False)
     positive_rate = Column(Float, nullable=True, default=0.0)

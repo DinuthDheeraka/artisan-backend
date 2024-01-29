@@ -21,6 +21,6 @@ async def read_item(artwork_id: int):
     return await get_art_by_id(artwork_id)
 
 
-@router.post("/review")
+@router.post("/reviews")
 async def save_review(review_data: ReviewCreate = Depends()):
     return await save_artwork_review(review_data)

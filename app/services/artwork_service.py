@@ -2,7 +2,8 @@ import datetime
 
 from app.db.session import SessionLocal
 from app.exceptions.exceptions import ApplicationServiceException
-from app.models.models import Artwork, Artist, Review, Buyer
+from app.ml.nsfw_text_detector import detect_text
+from app.models.models import Artwork, Artist, Buyer, Review
 from app.util.s3_file_uploader import upload_to_s3
 
 
@@ -113,18 +114,27 @@ async def save_artwork_review(artwork_data):
             # find artist_id by artwork_id
             artwork = session.query(Artwork).filter_by(id=artwork_data.artwork_id).first()
 
-            # upload profile image
-            object_name = (f"uploads/profile-images/{datetime.datetime.utcnow()}{'_'}"
-                           f"{artwork_data.review_image.filename}")
+            print(artwork_data.review_comment)
 
-            review_img_url = upload_to_s3(object_name, artwork_data.review_image.file)
+            sfw_score = detect_text(artwork_data.review_comment)
+
+            if sfw_score[0]['label'] == 'NSFW':
+                return {"status_code": 800, "success": False, "message": "Review comment is not safe for publish."}
 
             # save new buyer
             new_review = Review(buyer_id=artwork_data.buyer_id, artwork_id=artwork_data.artwork_id,
                                 artist_id=artwork.artist_id, display_name=artwork_data.display_name,
-                                email=artwork_data.email, review_comment=artwork_data.review_comment,
-                                review_img_url=review_img_url, review_points=artwork_data.review_points)
+                                email=artwork_data.email, review_comment=artwork_data.review_comment, review_points=10)
 
+            # upload profile image
+            object_name = (f"uploads/review_images/{datetime.datetime.utcnow()}{'_'}"
+                           f"{artwork_data.review_image.filename}")
+
+            review_img_url = upload_to_s3(object_name, artwork_data.review_image.file)
+
+            new_review.review_image_url = review_img_url
+
+            # save review
             session.add(new_review)
 
             session.commit()
