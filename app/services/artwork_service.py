@@ -121,24 +121,50 @@ async def save_artwork_review(artwork_data):
             if sfw_score[0]['label'] == 'NSFW':
                 return {"status_code": 800, "success": False, "message": "Review comment is not safe for publish."}
 
-            # save new buyer
-            new_review = Review(buyer_id=artwork_data.buyer_id, artwork_id=artwork_data.artwork_id,
-                                artist_id=artwork.artist_id, display_name=artwork_data.display_name,
-                                email=artwork_data.email, review_comment=artwork_data.review_comment, review_points=10)
-
             # upload profile image
             object_name = (f"uploads/review_images/{datetime.datetime.utcnow()}{'_'}"
                            f"{artwork_data.review_image.filename}")
 
             review_img_url = upload_to_s3(object_name, artwork_data.review_image.file)
 
-            new_review.review_image_url = review_img_url
+            # save new buyer
+            new_review = Review(buyer_id=artwork_data.buyer_id, artwork_id=artwork_data.artwork_id,
+                                artist_id=artwork.artist_id, display_name=artwork_data.display_name,
+                                review_img_url=review_img_url, email=artwork_data.email,
+                                review_comment=artwork_data.review_comment, review_points=artwork_data.review_points)
 
             # save review
             session.add(new_review)
 
             session.commit()
 
+            return {"status_code": 200, "success": True, "message": "Review published successfully."}
+
         except Exception as e:
             session.rollback()
             raise e
+
+
+async def get_reviews_by_artwork_id(artwork_id: int):
+    with (SessionLocal() as session):
+        try:
+
+            # find artwork by id
+            reviews = session.query(Review).filter_by(artwork_id=artwork_id).all()
+
+            # Convert the results to a list of dictionaries
+            results = [
+                {"id": row.id, "buyer_id": row.buyer_id, "artwork_id": row.artwork_id, "display_name": row.display_name,
+                 "email": row.email, "review_comment": row.review_comment, "review_img_url": row.review_img_url,
+                 "review_points": row.review_points, "review_starts": row.review_stars, "is_positive": row.is_positive,
+                 "positive_rate": row.positive_rate} for row in reviews]
+
+            return {"reviews": results}
+
+        except Exception as e:
+
+            session.close()
+            raise ApplicationServiceException(True, 200, 'Exception in get_all_artworks')
+
+        finally:
+            session.close()

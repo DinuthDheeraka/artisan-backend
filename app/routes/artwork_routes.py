@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends
 
 from app.schemas.artwork_schema import ArtworkCreate, ReviewCreate
-from app.services.artwork_service import save_artwork, get_all_artworks, get_art_by_id, save_artwork_review
+from app.services.artwork_service import save_artwork, get_all_artworks, get_art_by_id, save_artwork_review, \
+    get_reviews_by_artwork_id
 
 router = APIRouter()
 
@@ -24,3 +25,8 @@ async def read_item(artwork_id: int):
 @router.post("/reviews")
 async def save_review(review_data: ReviewCreate = Depends()):
     return await save_artwork_review(review_data)
+
+
+@router.get("/reviews/{artwork_id}")
+async def save_review(artwork_id: int):
+    return await get_reviews_by_artwork_id(artwork_id)
