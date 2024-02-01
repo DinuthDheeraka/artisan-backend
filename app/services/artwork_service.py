@@ -2,7 +2,7 @@ import datetime
 
 from app.db.session import SessionLocal
 from app.exceptions.exceptions import ApplicationServiceException
-from app.ml.nsfw_text_detector import detect_text
+# from app.ml.nsfw_text_detector import detect_text
 from app.models.models import Artwork, Artist, Buyer, Review
 from app.util.s3_file_uploader import upload_to_s3
 
@@ -11,7 +11,6 @@ async def save_artwork(artwork_data):
     with SessionLocal() as session:
         try:
             new_artwork = Artwork(title=artwork_data.title, year_of_creation=artwork_data.year_of_creation,
-
                                   artwork_category=artwork_data.artwork_category, medium=artwork_data.medium,
                                   support_or_surface=artwork_data.support_or_surface,
                                   number_of_copies=artwork_data.number_of_copies,
@@ -116,10 +115,10 @@ async def save_artwork_review(artwork_data):
 
             print(artwork_data.review_comment)
 
-            sfw_score = detect_text(artwork_data.review_comment)
+            # sfw_score = detect_text(artwork_data.review_comment)
 
-            if sfw_score[0]['label'] == 'NSFW':
-                return {"status_code": 800, "success": False, "message": "Review comment is not safe for publish."}
+            # if sfw_score[0]['label'] == 'NSFW':
+            #     return {"status_code": 800, "success": False, "message": "Review comment is not safe for publish."}
 
             # upload profile image
             object_name = (f"uploads/review_images/{datetime.datetime.utcnow()}{'_'}"

@@ -116,3 +116,28 @@ class Review(Base):
     created_at = Column(DateTime, nullable=False, server_default=func.current_timestamp())
     updated_at = Column(DateTime, nullable=False, server_default=func.current_timestamp(),
                         onupdate=func.current_timestamp())
+
+
+class Orders(Base):
+    __tablename__ = 'orders'
+    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
+    buyer_id = Column(Integer, nullable=True, default=None)
+    order_operational_status = Column(String(255), default="IN_PROGRESS")
+    order_status = Column(String(255), default="ACTIVE")
+    created_at = Column(DateTime, nullable=False, server_default=func.current_timestamp())
+    updated_at = Column(DateTime, nullable=False, server_default=func.current_timestamp(),
+                        onupdate=func.current_timestamp())
+
+
+class OrderDetail(Base):
+    __tablename__ = 'order_detail'
+    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
+    price = Column(Float, nullable=True, default=0.0)
+    discount = Column(Float, nullable=True, default=0.0)
+    qty = Column(Integer, nullable=True, default=0.0)
+    order_id = Column(Integer, nullable=True, default=None)
+    artwork_id = Column(Integer, nullable=True, default=None)
+    created_at = Column(DateTime, nullable=False, server_default=func.current_timestamp())
+    updated_at = Column(DateTime, nullable=False, server_default=func.current_timestamp(),
+                        onupdate=func.current_timestamp())
+
