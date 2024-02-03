@@ -13,8 +13,9 @@ async def save(artwork_data: ArtworkCreate):
 
 
 @router.get("/")
-async def get_all():
-    return await get_all_artworks()
+async def get_all(category: str = ""):
+    print(category)
+    return await get_all_artworks(category=category)
 
 
 @router.get("/{artwork_id}")

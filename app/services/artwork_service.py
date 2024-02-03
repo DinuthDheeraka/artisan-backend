@@ -2,6 +2,7 @@ import datetime
 
 from app.db.session import SessionLocal
 from app.exceptions.exceptions import ApplicationServiceException
+from app.ml.nsfw_text_detector import detect_text
 # from app.ml.nsfw_text_detector import detect_text
 from app.models.models import Artwork, Artist, Buyer, Review
 from app.util.s3_file_uploader import upload_to_s3
@@ -46,16 +47,30 @@ async def save_artwork(artwork_data):
             raise e
 
 
-async def get_all_artworks():
+async def get_all_artworks(category):
     with (SessionLocal() as session):
         try:
 
-            # Query the table and select only specific fields
-            selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping, Artwork.medium,
-                                            Artwork.description, Artwork.height, Artwork.width, Artwork.thickness,
-                                            Artwork.main_image, Artwork.length_unit, Artwork.artwork_category,
-                                            Artist.full_name).join(Artist, Artwork.artist_id == Artist.id).filter(
-                Artwork.artwork_status == 'ACTIVE', Artwork.sales_status == 'For Sale').all()
+            selected_fields = []
+
+            if category is not "":
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.artwork_category == category, Artwork.artwork_status == 'ACTIVE',
+                    Artwork.sales_status == 'For Sale').all()
+
+            else:
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.artwork_status == 'ACTIVE', Artwork.sales_status == 'For Sale').all()
 
             # Convert the results to a list of dictionaries
             results = [
@@ -115,10 +130,10 @@ async def save_artwork_review(artwork_data):
 
             print(artwork_data.review_comment)
 
-            # sfw_score = detect_text(artwork_data.review_comment)
+            sfw_score = detect_text(artwork_data.review_comment)
 
-            # if sfw_score[0]['label'] == 'NSFW':
-            #     return {"status_code": 800, "success": False, "message": "Review comment is not safe for publish."}
+            if sfw_score[0]['label'] == 'NSFW':
+                return {"status_code": 800, "success": False, "message": "Review comment is not safe for publish."}
 
             # upload profile image
             object_name = (f"uploads/review_images/{datetime.datetime.utcnow()}{'_'}"

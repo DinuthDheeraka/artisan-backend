@@ -41,3 +41,28 @@ async def save_artist(artist_data):
         except Exception as e:
             session.rollback()
             raise e
+
+
+async def get_artist_by_id(artist_id: int):
+    with (SessionLocal() as session):
+        try:
+            # Query the table and select only specific fields
+            artist_by_id = session.query(Artist.id, Artist.display_name, Artist.profile_img_url,
+                                         Artist.profile_background_img_url, Artist.artist_category,
+                                         Artist.date_of_birth, Artist.biography).filter(Artist.id == artist_id).first()
+
+            artist = {"id": artist_by_id.id, "display_name": artist_by_id.display_name,
+                      "profile_img_url": artist_by_id.profile_img_url, "artist_category": artist_by_id.artist_category,
+                      "date_of_birth": artist_by_id.date_of_birth,
+                      "profile_background_img_url": artist_by_id.profile_background_img_url,
+                      "biography": artist_by_id.biography}
+
+            return {"artist": artist}
+
+        except Exception as e:
+
+            session.close()
+            raise ApplicationServiceException(True, 200, 'Exception in get_all_artworks')
+
+        finally:
+            session.close()
