@@ -47,13 +47,14 @@ async def save_artwork(artwork_data):
             raise e
 
 
-async def get_all_artworks(category):
+async def get_all_artworks(category, artist_name, style, min_price, max_price):
     with (SessionLocal() as session):
         try:
 
             selected_fields = []
 
-            if category is not "":
+            if category != "" and artist_name == "" and style == "" and min_price == "" and max_price == "":
+                print(1)
                 # Query the table and select only specific fields
                 selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
                                                 Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
@@ -63,7 +64,295 @@ async def get_all_artworks(category):
                     Artwork.artwork_category == category, Artwork.artwork_status == 'ACTIVE',
                     Artwork.sales_status == 'For Sale').all()
 
-            else:
+            if category != "" and artist_name != "" and style == "" and min_price == "" and max_price == "":
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.artwork_category == category, Artist.display_name == artist_name,
+                    Artwork.artwork_status == 'ACTIVE', Artwork.sales_status == 'For Sale').all()
+
+            if category != "" and artist_name != "" and style != "" and min_price == "" and max_price == "":
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.artwork_category == category, Artist.display_name == artist_name,
+                    Artwork.artwork_style == style, Artwork.artwork_status == 'ACTIVE',
+                    Artwork.sales_status == 'For Sale').all()
+
+            if category != "" and artist_name != "" and style != "" and min_price != "" and max_price == "":
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.price_without_shipping >= float(min_price), Artwork.artwork_category == category,
+                    Artist.display_name == artist_name, Artwork.artwork_style == style,
+                    Artwork.artwork_status == 'ACTIVE', Artwork.sales_status == 'For Sale').all()
+
+            if category != "" and artist_name != "" and style != "" and min_price != "" and max_price != "":
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.price_without_shipping >= float(min_price),
+                    Artwork.price_without_shipping <= float(max_price), Artwork.artwork_category == category,
+                    Artist.display_name == artist_name, Artwork.artwork_style == style,
+                    Artwork.artwork_status == 'ACTIVE', Artwork.sales_status == 'For Sale').all()
+
+            if category != "" and artist_name == "" and style != "" and min_price != "" and max_price != "":
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.price_without_shipping >= float(min_price),
+                    Artwork.price_without_shipping <= float(max_price), Artwork.artwork_category == category,
+                    Artist.display_name == artist_name, Artwork.artwork_style == style,
+                    Artwork.artwork_status == 'ACTIVE', Artwork.sales_status == 'For Sale').all()
+
+            if category != "" and artist_name == "" and style != "" and min_price != "" and max_price == "":
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.price_without_shipping >= float(min_price), Artwork.artwork_category == category,
+                    Artwork.artwork_style == style, Artwork.artwork_status == 'ACTIVE',
+                    Artwork.sales_status == 'For Sale').all()
+
+            if category != "" and artist_name == "" and style != "" and min_price == "" and max_price == "":
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.artwork_category == category, Artwork.artwork_style == style,
+                    Artwork.artwork_status == 'ACTIVE', Artwork.sales_status == 'For Sale').all()
+
+            if category != "" and artist_name == "" and style != "" and min_price == "" and max_price != "":
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+
+                    Artwork.price_without_shipping <= float(max_price), Artwork.artwork_category == category,
+                    Artwork.artwork_style == style, Artwork.artwork_status == 'ACTIVE',
+                    Artwork.sales_status == 'For Sale').all()
+
+            if category != "" and artist_name == "" and style == "" and min_price != "" and max_price != "":
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.price_without_shipping >= float(min_price),
+                    Artwork.price_without_shipping <= float(max_price), Artwork.artwork_category == category,
+                    Artwork.artwork_status == 'ACTIVE', Artwork.sales_status == 'For Sale').all()
+
+            if category != "" and artist_name == "" and style == "" and min_price != "" and max_price == "":
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.price_without_shipping >= float(min_price), Artwork.artwork_category == category,
+                    Artwork.artwork_status == 'ACTIVE', Artwork.sales_status == 'For Sale').all()
+
+            if category != "" and artist_name == "" and style == "" and min_price == "" and max_price != "":
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+
+                    Artwork.price_without_shipping <= float(max_price), Artwork.artwork_category == category,
+                    Artwork.artwork_status == 'ACTIVE', Artwork.sales_status == 'For Sale').all()
+
+            if category == "" and artist_name == "" and style == "" and min_price == "" and max_price != "":
+                pass
+
+            # --------------------------------------------------------------------------------------------------
+
+            if category == "" and artist_name != "" and style != "" and min_price != "" and max_price != "":
+                print("all")
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.price_without_shipping >= float(min_price),
+                    Artwork.price_without_shipping <= float(max_price), Artist.display_name == artist_name,
+                    Artwork.artwork_style == style, Artwork.artwork_status == 'ACTIVE',
+                    Artwork.sales_status == 'For Sale').all()
+
+            if category == "" and artist_name != "" and style != "" and min_price != "" and max_price == "":
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.price_without_shipping >= float(min_price), Artist.display_name == artist_name,
+                    Artwork.artwork_style == style, Artwork.artwork_status == 'ACTIVE',
+                    Artwork.sales_status == 'For Sale').all()
+
+            if category == "" and artist_name != "" and style != "" and min_price == "" and max_price == "":
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+
+                    Artist.display_name == artist_name, Artwork.artwork_style == style,
+                    Artwork.artwork_status == 'ACTIVE', Artwork.sales_status == 'For Sale').all()
+
+            if category == "" and artist_name != "" and style == "" and min_price == "" and max_price == "":
+                print('artist')
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artist.display_name == artist_name, Artwork.artwork_status == 'ACTIVE',
+                    Artwork.sales_status == 'For Sale').all()
+
+            if category == "" and artist_name != "" and style == "" and min_price != "" and max_price != "":
+                print("all")
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.price_without_shipping >= float(min_price),
+                    Artwork.price_without_shipping <= float(max_price), Artist.display_name == artist_name,
+                    Artwork.artwork_status == 'ACTIVE', Artwork.sales_status == 'For Sale').all()
+
+            if category == "" and artist_name != "" and style == "" and min_price != "" and max_price == "":
+                print("all")
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.price_without_shipping >= float(min_price), Artist.display_name == artist_name,
+                    Artwork.artwork_status == 'ACTIVE', Artwork.sales_status == 'For Sale').all()
+
+            if category == "" and artist_name != "" and style == "" and min_price == "" and max_price != "":
+                print("all")
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+
+                    Artwork.price_without_shipping <= float(max_price), Artist.display_name == artist_name,
+                    Artwork.artwork_status == 'ACTIVE', Artwork.sales_status == 'For Sale').all()
+
+            # ------------------------------------------------------------------------------------------------
+
+            if category == "" and artist_name == "" and style != "" and min_price != "" and max_price != "":
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.price_without_shipping >= float(min_price),
+                    Artwork.price_without_shipping <= float(max_price), Artwork.artwork_style == style,
+                    Artwork.artwork_status == 'ACTIVE', Artwork.sales_status == 'For Sale').all()
+
+            if category == "" and artist_name == "" and style != "" and min_price != "" and max_price == "":
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.price_without_shipping >= float(min_price), Artwork.artwork_style == style,
+                    Artwork.artwork_status == 'ACTIVE', Artwork.sales_status == 'For Sale').all()
+
+            if category == "" and artist_name == "" and style != "" and min_price == "" and max_price != "":
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+
+                    Artwork.price_without_shipping <= float(max_price), Artwork.artwork_style == style,
+                    Artwork.artwork_status == 'ACTIVE', Artwork.sales_status == 'For Sale').all()
+
+            if category == "" and artist_name == "" and style != "" and min_price == "" and max_price == "":
+                print('style')
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.artwork_style == style, Artwork.artwork_status == 'ACTIVE',
+                    Artwork.sales_status == 'For Sale').all()
+
+            # ---------------------------------------------------------------------------------------------
+
+            if category == "" and artist_name == "" and style == "" and min_price != "" and max_price != "":
+                print("min-max-price")
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.price_without_shipping >= float(min_price),
+                    Artwork.price_without_shipping <= float(max_price), Artwork.artwork_status == 'ACTIVE',
+                    Artwork.sales_status == 'For Sale').all()
+
+            if category == "" and artist_name == "" and style == "" and min_price != "" and max_price == "":
+                print("min-price")
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.price_without_shipping >= float(min_price), Artwork.artwork_status == 'ACTIVE',
+                    Artwork.sales_status == 'For Sale').all()
+
+            if category == "" and artist_name == "" and style == "" and min_price == "" and max_price != "":
+                print("max-price")
+                # Query the table and select only specific fields
+                selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
+                                                Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
+                                                Artwork.thickness, Artwork.main_image, Artwork.length_unit,
+                                                Artwork.artwork_category, Artist.full_name).join(Artist,
+                                                                                                 Artwork.artist_id == Artist.id).filter(
+                    Artwork.price_without_shipping <= float(max_price), Artwork.artwork_status == 'ACTIVE',
+                    Artwork.sales_status == 'For Sale').all()
+
+            if category == "" and artist_name == "" and style == "" and min_price == "" and max_price == "":
                 # Query the table and select only specific fields
                 selected_fields = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping,
                                                 Artwork.medium, Artwork.description, Artwork.height, Artwork.width,
