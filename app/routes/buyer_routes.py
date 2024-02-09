@@ -8,5 +8,5 @@ router = APIRouter()
 
 @router.post("/")
 async def save(buyer_data: BuyerCreate = Depends()):
-    await save_buyer(buyer_data)
-    return {"success": True, "status_code": 200, "message": "Your profile was saved."}
+    return await save_buyer(buyer_data)
+

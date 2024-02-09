@@ -2,7 +2,7 @@ from starlette.responses import JSONResponse
 
 from app.db.session import SessionLocal
 from app.exceptions.exceptions import ApplicationServiceException
-from app.models.models import Buyer, Orders, Artwork, OrderDetail
+from app.models.models import Buyer, Orders, Artwork, OrderDetail, Artist
 
 
 async def save_order(order_data):
@@ -59,3 +59,29 @@ async def save_order(order_data):
             session.rollback()
             return JSONResponse(status_code=500,
                                 content={"success": False, "status_code": 200, "message": "Exception in save_order"})
+
+
+async def get_orders_by_buyer_id(buyer_id):
+    with SessionLocal() as session:
+        try:
+            data = []
+
+            orders = session.query(OrderDetail).join(Orders, OrderDetail.order_id == Orders.id).filter_by(
+                buyer_id=buyer_id).all()
+
+            for i in range(len(orders)):
+                order_detail = orders[i]
+
+                artwork = session.query(Artwork).filter_by(id=order_detail.artwork_id).first()
+
+                artist = session.query(Artist).filter_by(id=artwork.artist_id).first()
+
+                data.append({"id": order_detail.id, "price": order_detail.price, "qty": order_detail.qty,
+                             "date": order_detail.created_at, "artwork_id": artwork.id, "artwork_name": artwork.title,
+                             "artist_id": artist.id, "artist_name": artist.display_name,
+                             "artwork_img": artwork.main_image})
+
+                return data
+        except Exception as e:
+            session.rollback()
+            raise e

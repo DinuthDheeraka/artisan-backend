@@ -1,48 +1,44 @@
-from typing import Optional
-
 from fastapi import UploadFile, Form
-from pydantic import BaseModel
 
 
-class ArtworkCreate(BaseModel):
-    title: str = "Artwork Title"
-    year_of_creation: Optional[str] = None
-
-    main_image: Optional[str] = None
-    image_1: Optional[str] = None
-    image_2: Optional[str] = None
-    image_3: Optional[str] = None
-    image_4: Optional[str] = None
-
-    artwork_category: Optional[str] = None
-    medium: Optional[str] = None
-    support_or_surface: Optional[str] = None
-    number_of_copies: int = 1
-    number_of_copies_for_sale: int = 1
-
-    can_display_outdoors: bool = False
-    can_display_on_walls: bool = False
-    ready_to_hang: bool = False
-
-    is_framed: bool = False
-    frame_height: float = 0.0
-    frame_width: float = 0.0
-    frame_thickness: float = 0.0
-
-    length_unit: str = 'cm'
-    height: float = 0.0
-    width: float = 0.0
-    thickness: float = 0.0
-    weight: float = 0.0
-
-    sales_status: str = "For Sale"
-    price_without_shipping: float = 0.0
-    discount_price: float = 0.0
-
-    artwork_condition: Optional[str] = None
-    description: str = "Artwork Description"
-    artwork_style: Optional[str] = None
-    keywords: Optional[str] = None
+class ArtworkCreate:
+    def __init__(self, title: str = Form(...), year_of_creation: str = Form(...), artwork_category: str = Form(...),
+                 medium: str = Form(...), support_surface: str = Form(...), number_of_copies: int = Form(...),
+                 number_of_copies_for_sale: int = Form(...), main_image: UploadFile = Form(...),
+                 can_display_outdoor: bool = Form(...), can_display_on_wall: bool = Form(...),
+                 ready_to_hang: bool = Form(...), is_framed: bool = Form(...), frame_height: float = Form(...),
+                 frame_width: float = Form(...), frame_thickness: float = Form(...), height: float = Form(...),
+                 width: float = Form(...), thickness: float = Form(...), weight: float = Form(...),
+                 sales_status: str = Form(...), price_without_shipping: float = Form(...),
+                 discount_price: float = Form(...), artwork_condition: str = Form(...), description: str = Form(...),
+                 artwork_style: str = Form(...), keywords: str = Form(...), artist_id: int = Form(...)):
+        self.title = title
+        self.year_of_creation = year_of_creation
+        self.artwork_category = artwork_category
+        self.medium = medium
+        self.support_surface = support_surface
+        self.number_of_copies = number_of_copies
+        self.number_of_copies_for_sale = number_of_copies_for_sale
+        self.main_image = main_image
+        self.can_display_outdoor = can_display_outdoor
+        self.can_display_on_wall = can_display_on_wall
+        self.ready_to_hang = ready_to_hang
+        self.is_framed = is_framed
+        self.frame_height = frame_height
+        self.frame_width = frame_width
+        self.frame_thickness = frame_thickness
+        self.height = height
+        self.width = width
+        self.thickness = thickness
+        self.weight = weight
+        self.sales_status = sales_status
+        self.price_without_shipping = price_without_shipping
+        self.discount_price = discount_price
+        self.artwork_condition = artwork_condition
+        self.description = description
+        self.artwork_style = artwork_style
+        self.keywords = keywords
+        self.artist_id = artist_id
 
 
 class ReviewCreate:

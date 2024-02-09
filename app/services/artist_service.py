@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import bcrypt
+from starlette.responses import JSONResponse
 
 from app.db.session import SessionLocal
 from app.exceptions.exceptions import ApplicationServiceException
@@ -37,6 +38,14 @@ async def save_artist(artist_data):
             session.add(new_artist)
 
             session.commit()
+
+            return {"id": new_artist.id, "email": new_artist.email, "display_name": new_artist.display_name,
+                    "user_role": "Artist", "profile_img": new_artist.profile_img_url}
+
+        except ApplicationServiceException as ae:
+            session.rollback()
+            return JSONResponse(status_code=ae.code,
+                                content={"success": ae.success, "status_code": ae.code, "message": ae.message})
 
         except Exception as e:
             session.rollback()

@@ -55,10 +55,6 @@ class Artwork(Base):
     year_of_creation = Column(String(5), default=None)
 
     main_image = Column(String(400), default=None, nullable=True)
-    image_1 = Column(String(400), default=None, nullable=True)
-    image_2 = Column(String(400), default=None, nullable=True)
-    image_3 = Column(String(400), default=None, nullable=True)
-    image_4 = Column(String(400), default=None, nullable=True)
 
     artwork_category = Column(String(200), nullable=True)
     medium = Column(String(200), nullable=True)

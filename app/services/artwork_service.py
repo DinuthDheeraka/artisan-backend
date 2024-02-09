@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 from app.db.session import SessionLocal
 from app.exceptions.exceptions import ApplicationServiceException
@@ -11,32 +11,30 @@ from app.util.s3_file_uploader import upload_to_s3
 async def save_artwork(artwork_data):
     with SessionLocal() as session:
         try:
+
+            # upload profile image
+            object_name = (f"uploads/artworks/{datetime.utcnow()}{'_'}"
+                           f"{artwork_data.main_image.filename}")
+
+            main_img_url = upload_to_s3(object_name, artwork_data.main_image.file)
+
             new_artwork = Artwork(title=artwork_data.title, year_of_creation=artwork_data.year_of_creation,
                                   artwork_category=artwork_data.artwork_category, medium=artwork_data.medium,
-                                  support_or_surface=artwork_data.support_or_surface,
+                                  support_or_surface=artwork_data.support_surface,
                                   number_of_copies=artwork_data.number_of_copies,
                                   number_of_copies_for_sale=artwork_data.number_of_copies_for_sale,
-
-                                  can_display_outdoors=artwork_data.can_display_outdoors,
-                                  can_display_on_walls=artwork_data.can_display_on_walls,
-                                  ready_to_hang=artwork_data.ready_to_hang,
-
-                                  is_framed=artwork_data.is_framed, frame_height=artwork_data.frame_height,
-                                  frame_width=artwork_data.frame_width, frame_thickness=artwork_data.frame_thickness,
-
-                                  length_unit=artwork_data.length_unit, height=artwork_data.height,
+                                  main_image=main_img_url, can_display_outdoors=artwork_data.can_display_outdoor,
+                                  can_display_on_walls=artwork_data.can_display_on_wall,
+                                  ready_to_hang=artwork_data.ready_to_hang, is_framed=artwork_data.is_framed,
+                                  frame_height=artwork_data.frame_height, frame_width=artwork_data.frame_width,
+                                  frame_thickness=artwork_data.frame_thickness, height=artwork_data.height,
                                   width=artwork_data.width, thickness=artwork_data.thickness,
-                                  weight=artwork_data.weight,
-
-                                  sales_status=artwork_data.sales_status,
+                                  weight=artwork_data.weight, sales_status=artwork_data.sales_status,
                                   price_without_shipping=artwork_data.price_without_shipping,
                                   discount_price=artwork_data.discount_price,
-
                                   artwork_condition=artwork_data.artwork_condition,
                                   description=artwork_data.description, artwork_style=artwork_data.artwork_style,
-                                  keywords=artwork_data.keywords,
-
-                                  artist_id=None)
+                                  keywords=artwork_data.keywords, artist_id=artwork_data.artist_id)
 
             session.add(new_artwork)
 

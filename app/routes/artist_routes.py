@@ -8,8 +8,8 @@ router = APIRouter()
 
 @router.post("/")
 async def save(artist_data: ArtistCreate = Depends()):
-    await save_artist(artist_data)
-    return {"success": True, "status_code": 200, "message": "Your profile was saved."}
+    user_data = await save_artist(artist_data)
+    return {"user": user_data, "success": True, "status_code": 200, "message": "Your profile was saved."}
 
 
 @router.get("/{artist_id}")

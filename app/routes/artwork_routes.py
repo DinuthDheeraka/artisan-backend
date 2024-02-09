@@ -1,15 +1,16 @@
 from fastapi import APIRouter, Depends
 
-from app.schemas.artwork_schema import ArtworkCreate, ReviewCreate
-from app.services.artwork_service import save_artwork, get_all_artworks, get_art_by_id, save_artwork_review, \
-    get_reviews_by_artwork_id
+from app.schemas.artwork_schema import ReviewCreate, ArtworkCreate
+from app.services.artwork_service import get_all_artworks, get_art_by_id, save_artwork_review, \
+    get_reviews_by_artwork_id, save_artwork
 
 router = APIRouter()
 
 
 @router.post("/")
-async def save(artwork_data: ArtworkCreate):
+async def save(artwork_data: ArtworkCreate = Depends()):
     await save_artwork(artwork_data)
+    return {"success": True, "status_code": 200, "message": "Saved artwork successfully."}
 
 
 @router.get("/")
