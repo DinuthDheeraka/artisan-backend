@@ -48,7 +48,7 @@ async def save_order(order_data):
             # Commit the changes
             session.commit()
 
-            return {"status_code": 200, "success": True, "message": "Checkout successful"}
+            return {"status_code": 200, "success": True, "message": "Checkout outed successfully."}
 
         except ApplicationServiceException as ae:
             session.rollback()

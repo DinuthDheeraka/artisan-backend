@@ -5,7 +5,7 @@ from app.exceptions.exceptions import ApplicationServiceException
 from app.ml.nsfw_text_detector import detect_text
 from app.ml.text_similarity_detector import similarity
 # from app.ml.nsfw_text_detector import detect_text
-from app.models.models import Artwork, Artist, Buyer, Review
+from app.models.models import Artwork, Artist, Buyer, Review, OrderDetail, Orders
 from app.util.s3_file_uploader import upload_to_s3
 
 
@@ -442,6 +442,19 @@ async def save_artwork_review(artwork_data):
             if buyer is None:
                 raise ApplicationServiceException(200, False, 'buyer not found')
 
+            review_by_buyer = session.query(Review).filter_by(buyer_id=artwork_data.buyer_id,
+                                                              artwork_id=artwork_data.artwork_id).first()
+
+            if review_by_buyer is not None:
+                return {"status_code": 200, "success": False,
+                        "message": "You can't review this artwork more than once."}
+
+            orders_by_buyer = (session.query(OrderDetail).join(Orders, OrderDetail.order_id == Orders.id).filter(
+                Orders.buyer_id == artwork_data.buyer_id, OrderDetail.artwork_id == artwork_data.artwork_id).first())
+
+            if orders_by_buyer is None:
+                return {"status_code": 200, "success": False, "message": "You can't review this artwork before buying."}
+
             # find artist_id by artwork_id
             artwork = session.query(Artwork).filter_by(id=artwork_data.artwork_id).first()
 
@@ -450,7 +463,7 @@ async def save_artwork_review(artwork_data):
             sfw_score = detect_text(artwork_data.review_comment)
 
             if sfw_score[0]['label'] == 'NSFW':
-                return {"status_code": 800, "success": False, "message": "Review comment is not safe for publish."}
+                return {"status_code": 800, "success": False, "message": "Your review comment is not safe for publish."}
 
             # upload profile image
             object_name = (f"uploads/review_images/{datetime.utcnow()}{'_'}"
