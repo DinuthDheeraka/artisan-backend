@@ -16,7 +16,7 @@ venv10/
 *.log
 
 # Local configuration files
-*.env
+#*.env
 
 # Temporary files
 *.tmp
@@ -50,11 +50,11 @@ wheels/
 .idea/workspace.xml
 
 # Environments
-.env
+#.env
 .venv
-env/
+#env/
 ENV/
-env.bak/
+#env.bak/
 venv.bak/
 
 # Spyder project settings
