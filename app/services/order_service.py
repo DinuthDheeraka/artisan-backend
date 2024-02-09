@@ -81,7 +81,8 @@ async def get_orders_by_buyer_id(buyer_id):
                              "artist_id": artist.id, "artist_name": artist.display_name,
                              "artwork_img": artwork.main_image})
 
-                return data
+            return data
+
         except Exception as e:
             session.rollback()
             raise e

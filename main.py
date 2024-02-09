@@ -36,5 +36,5 @@ app.include_router(order_routes.router, prefix="/api/v1/orders")
 if __name__ == "__main__":
     Base.metadata.reflect(engine)  # Reflect existing tables
     print(Base.metadata.tables)  # View reflected tables
-    # Base.metadata.drop_all(engine)  # Drop all tables  #
+    Base.metadata.drop_all(engine)  # Drop all tables  #
     Base.metadata.create_all(engine)  # Recreate tables

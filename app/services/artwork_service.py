@@ -423,7 +423,7 @@ async def save_artwork_review(artwork_data):
                 return {"status_code": 800, "success": False, "message": "Review comment is not safe for publish."}
 
             # upload profile image
-            object_name = (f"uploads/review_images/{datetime.datetime.utcnow()}{'_'}"
+            object_name = (f"uploads/review_images/{datetime.utcnow()}{'_'}"
                            f"{artwork_data.review_image.filename}")
 
             review_img_url = upload_to_s3(object_name, artwork_data.review_image.file)
