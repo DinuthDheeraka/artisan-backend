@@ -3,6 +3,7 @@ from datetime import datetime
 from app.db.session import SessionLocal
 from app.exceptions.exceptions import ApplicationServiceException
 from app.ml.nsfw_text_detector import detect_text
+from app.ml.text_similarity_detector import similarity
 # from app.ml.nsfw_text_detector import detect_text
 from app.models.models import Artwork, Artist, Buyer, Review
 from app.util.s3_file_uploader import upload_to_s3
@@ -45,11 +46,40 @@ async def save_artwork(artwork_data):
             raise e
 
 
-async def get_all_artworks(category, artist_name, style, min_price, max_price):
+async def get_all_artworks(category, artist_name, style, min_price, max_price, search):
     with (SessionLocal() as session):
         try:
 
             selected_fields = []
+
+            if search != "":
+                print('search', search)
+                artworks = session.query(Artwork.id, Artwork.title, Artwork.price_without_shipping, Artwork.medium,
+                                         Artwork.description, Artwork.height, Artwork.width, Artwork.thickness,
+                                         Artwork.main_image, Artwork.length_unit, Artwork.artwork_category,
+                                         Artwork.keywords, Artist.full_name).join(Artist,
+                                                                                  Artwork.artist_id == Artist.id).filter(
+                    Artwork.artwork_status == 'ACTIVE', Artwork.sales_status == 'For Sale').all()
+
+                for artwork in artworks:
+
+                    print(artwork.id)
+
+                    result = similarity([search, artwork.title, artwork.keywords])
+
+                    print(result)
+
+                    if (result['title'] * 10) > 5 or (result['keywords'] * 10) > 5:
+                        selected_fields.append(artwork)
+                        print(artwork.id)
+
+                        # Convert the results to a list of dictionaries
+                results = [{"id": row.id, "title": row.title, "main_image": row.main_image,
+                            "price": row.price_without_shipping, "medium": row.medium, "artist_name": row.full_name,
+                            "height": row.height, "width": row.width, "category": row.artwork_category,
+                            "thickness": row.thickness, "unit": row.length_unit} for row in selected_fields]
+
+                return {"selected_artworks": results}
 
             if category != "" and artist_name == "" and style == "" and min_price == "" and max_price == "":
                 print(1)
